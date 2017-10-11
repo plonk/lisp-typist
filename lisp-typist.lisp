@@ -167,7 +167,7 @@
          (format nil "In reality, you typed ~A CPM,~%" (result-raw-cpm res))
          (format nil "but you made ~A mistake~:p (out of ~A word~:p),~%"
                  nmistakes (length (get-done-words *problem*)))
-         (format nil "which was not counted in the corrected scores.~%~%"))
+         (format nil "which ~A not counted in the corrected scores.~%~%" (if (= 1 nmistakes) "was" "were")))
         (addstr-centered
          (format nil "Your mistake~p ~a:~%" nmistakes (if (= 1 nmistakes) "was" "were")))
         (dolist (pair (result-mistakes res))
