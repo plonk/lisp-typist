@@ -208,6 +208,26 @@
 (defmacro current-word-in (llist)
   `(nth *current-word-index* (nth *current-row-index* ,llist)))
 
+(defun back-to-previous-word ()
+  (cond
+   ((< 0 *current-word-index*)
+    (setf (current-word-in *answer*) "")
+    (decf *current-word-index*)
+    (adjust-array *buffer* (length (current-word-in *answer*))
+                  :fill-pointer t
+                  :initial-contents (current-word-in *answer*))
+    )
+   ((< 0 *current-row-index*)
+    (setf (current-word-in *answer*) "")
+    (decf *current-row-index*)
+    (setf *current-word-index*
+          (1- (length (nth *current-row-index* *problem*))))
+    (adjust-array *buffer* (length (current-word-in *answer*))
+                  :fill-pointer t
+                  :initial-contents (current-word-in *answer*)))
+   (t
+    (beep))))
+
 (defun typing-scene ()
   (create-problem)
   ;; *problem* にパラレルな空文字列のリストのリスト。
@@ -251,13 +271,15 @@
 
            ((= #x08 keycode)         ; ^H, assume to be Ctrl+Backspace
 
-            (setf *buffer* (make-adjustable-string)))
+            (if (string= "" *buffer*)
+                (back-to-previous-word)
+             (setf *buffer* (make-adjustable-string))))
 
            ((or (= KEY_BACKSPACE keycode) ; this comes when in keypad mode
                 (= #x7f keycode))         ; ^?
 
             (if (string= "" *buffer*)
-                (beep)
+                (back-to-previous-word)
               (vector-pop *buffer*)))
 
            ((= #x12 keycode) ; Ctrl+R
