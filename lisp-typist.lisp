@@ -272,7 +272,9 @@
            ((= #x08 keycode)         ; ^H, assume to be Ctrl+Backspace
 
             (if (string= "" *buffer*)
-                (back-to-previous-word)
+                (progn
+                  (back-to-previous-word)
+                  (setf (fill-pointer *buffer*) 0))
              (setf *buffer* (make-adjustable-string))))
 
            ((or (= KEY_BACKSPACE keycode) ; this comes when in keypad mode
