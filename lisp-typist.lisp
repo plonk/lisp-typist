@@ -161,7 +161,8 @@
               (result-corrected-wpm res))))
     (if (= 0 (length (result-mistakes res)))
         (addstr-centered
-         (format nil "Congratulations! You typed all 103 words correctly!~%~%"))
+         (format nil "Congratulations! You typed all ~A words correctly!~%~%"
+                 (result-raw-wpm res)))
       (progn
         (addstr-centered
          (format nil "In reality, you typed ~A CPM,~%" (result-raw-cpm res))
